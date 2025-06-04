@@ -126,3 +126,44 @@ test.serial.cb('GET /api/target/nonexistent returns 404', function (test) {
     test.end()
   })
 })
+
+test.serial.cb('match and accept', function (test) {
+  const payload = {
+    geoState: 'ca',
+    publisher: 'abc',
+    timestamp: '2025-06-04T14:00:00.000Z'
+  }
+  const url = '/route'
+  const testServer = servertest(server(), url, {
+    method: 'POST',
+    encoding: 'json'
+  }, function (err, res) {
+    test.falsy(err, 'no error')
+    test.is(res.statusCode, 200, 'correct statusCode')
+    test.is(res.body.decision, 'accept', 'should accept')
+    test.is(res.body.url, 'http://example.com', 'correct redirect URL')
+    test.end()
+  })
+
+  testServer.end(JSON.stringify(payload))
+})
+
+test.serial.cb('reject unmatched', function (test) {
+  const payload = {
+    geoState: 'tx',
+    publisher: 'abc',
+    timestamp: '2018-07-19T14:00:00.000Z'
+  }
+  const url = '/route'
+  const testServer = servertest(server(), url, {
+    method: 'POST',
+    encoding: 'json'
+  }, function (err, res) {
+    test.falsy(err, 'no error')
+    test.is(res.statusCode, 200, 'correct statusCode')
+    test.is(res.body.decision, 'reject', 'should reject')
+    test.end()
+  })
+  testServer.write(JSON.stringify(payload))
+  testServer.end()
+})

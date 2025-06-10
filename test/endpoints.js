@@ -35,7 +35,7 @@ test.serial.cb('create target', function (t) {
     }
   }, function (err, res) {
     t.falsy(err, 'no error')
-    t.is(res.statusCode, 200, 'correct statusCode')
+    t.is(res.statusCode, 201, 'correct statusCode')
     t.truthy(res.body.id, 'target has id') // you can customize this
     t.end()
   })
@@ -98,8 +98,6 @@ test.serial.cb('update target by id', function (test) {
 
 test.serial.cb('GET /favicon.ico returns 204', function (test) {
   servertest(server(), '/favicon.ico', { method: 'GET' }, function (err, res) {
-    console.log('res', res)
-    console.log('err', err)
     test.falsy(err, 'no error')
     test.is(res.statusCode, 204, 'should return 204 No Content')
     test.end()
